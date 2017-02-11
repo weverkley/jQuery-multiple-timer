@@ -1,49 +1,82 @@
 $(document).ready(function() {
 
-    var timer = null,
+    var timer = [],
         interval = 1000,
-        value = 0;
+        value = 0,
+        counter = 1;
 
-    $("#timer-1 .btn-start").click(function() {
-        if (timer !== null) return;
-        timer = setInterval(startTime, interval);
+    $(document).on('click', '.btn-start', function() {
+        var This = $(this);
+        if (!timer.indexOf(This.parents('tr').data('id'))) return;
+        timer[This.parents('tr').data('id')] = setInterval(function() {
+            var time = This.parents('tr').children('.timer-start').html();
+            time = time.split(':');
+            var h = parseInt(time[0]);
+            var m = parseInt(time[1]);
+            var s = parseInt(time[2]);
+
+            s++;
+
+            if (s > 59) {
+                s = 0;
+                m++;
+            }
+
+            if (m > 59) {
+                m = 0;
+                h++;
+            }
+
+            h = checkTime(h);
+            m = checkTime(m);
+            s = checkTime(s);
+
+            This.parents('tr').children('.timer-start').html(h + ":" + m + ":" + s);
+        }, interval);
     });
 
-    $("#timer-1 .btn-stop").click(function() {
-        clearInterval(timer);
-        timer = null
+    $(document).on('click', '.btn-pause', function() {
+        clearInterval(timer[$(this).parents('tr').data('id')]);
+        timer[$(this).parents('tr').data('id')] = null;
     });
 
-    function startTime() {
-        var time = $('#timer-1 .timer-start').html();
-        time = time.split(':');
-        var h = parseInt(time[0]);
-        var m = parseInt(time[1]);
-        var s = parseInt(time[2]);
+    $(document).on('click', '.btn-stop', function() {
+        $(this).parents('tr').remove();
+    });
 
-        s++;
-
-        if (s > 59) {
-            s = 0;
-            m++;
-        }
-
-        if (m > 59) {
-            m = 0;
-            h++;
-        }
-
-        h = checkTime(h);
-        m = checkTime(m);
-        s = checkTime(s);
-
-        $('#timer-1 .timer-start').html(h + ":" + m + ":" + s);
-
-    }
+    $(document).on('click', '.add-counter', function() {
+        $('#counters tbody').append(
+            counterLayout(counter)
+        );
+        counter++;
+    });
 
     function checkTime(i) {
         if (i < 10) { i = "0" + i }; // add zero in front of numbers < 10
         return i;
+    }
+
+    function returnDate(d) {
+        return (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes() + ':' + (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
+    }
+
+    function counterLayout(id) {
+        var ds = new Date(),
+            de = new Date();
+
+        de.setHours(ds.getHours() + 1, ds.getMinutes(), ds.getSeconds());
+
+        return '<tr class="counter" data-id="' + id + '" id="timer-' + id + '">' +
+            '<th scope="row">' + id + '</th>' +
+            '<td class="timer-start">' + returnDate(ds) + '</td>' +
+            '<td class="timer-end">' + returnDate(de) + '</td>' +
+            '<td>1 Hora</td>' +
+            '<th scope="row">' +
+            '<button class="btn-small btn-success btn-start"><i class="material-icons">play_arrow</i></button>' +
+            '<button class="btn-small btn-warning btn-pause"><i class="material-icons">pause</i></button>' +
+            '<button class="btn-small btn-danger btn-stop"><i class="material-icons">block</i></button>' +
+            '</th>' +
+            '</tr>'
     }
 
     /* Ajustar hora de início em linha */
