@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <span id="contador1">0</span><div id="contador1Label"> Parado</div><br>
+        <span id="contador2">0</span><div id="contador2Label"> Parado</div>
+        <script src="Timer.js"></script>
+        <script>
+
+        var contador  = new Timer();
+        var contador2 = new Timer();
+
+        contador.run();
+        document.getElementById('contador1Label').innerHTML = ' Rodando';
+
+        contador2.run();
+        contador.setLimit( '50' );
+        document.getElementById('contador2Label').innerHTML = ' Rodando';
+
+        // contador 1
+        contador.onChange( function( timer ){
+            elem = document.getElementById('contador1');
+            elem.innerHTML = timer.getTime();
+        });
+        setTimeout( function(){
+            console.log( 'Parou o contador 1');
+            contador.stop();
+            document.getElementById('contador1Label').innerHTML = ' Parado';
+        }, 5000 );
+        setTimeout( function(){
+            console.log( 'Reiniciou o contador 1');
+            contador.run();
+            document.getElementById('contador1Label').innerHTML = ' Rodando';
+        }, 10000 );
+        setTimeout( function(){
+            console.log('Parou e encerrou o contador 1');
+            contador.stop();
+            document.getElementById('contador1Label').innerHTML = ' Parado';
+        }, 15000 );
+
+        // contador 2
+        contador2.onChange( function( timer ){
+            elem = document.getElementById('contador2');
+            elem.innerHTML = timer.getTime();
+        });
+        setTimeout( function(){
+            console.log( 'Parou o contador 2');
+            contador2.stop();
+            document.getElementById('contador2Label').innerHTML = 'Parado';
+        }, 3000 );
+        setTimeout( function(){
+            console.log( 'Reiniciou o contador 2');
+            contador2.run();
+            document.getElementById('contador2Label').innerHTML = ' Rodando';
+        }, 6000 );
+        setTimeout( function(){
+            console.log('Parou e encerrou o contador 2');
+            contador2.stop();
+            document.getElementById('contador2Label').innerHTML = ' Parado';
+        }, 9000 );
+
+        </script>
+    </body>
+</html>
